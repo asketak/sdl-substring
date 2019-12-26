@@ -40,9 +40,7 @@ func LCSubstring(s string, t string) string {
 
 }
 
-// HelloHTTPMethod is an HTTP Cloud function.
-// It uses the request method to differentiate the response.
-func Hello(w http.ResponseWriter, r *http.Request) {
+func Entry(w http.ResponseWriter, r *http.Request) {
 	var request struct {
 		S1 string `json:"s1"`
 		S2 string `json:"s2"`
