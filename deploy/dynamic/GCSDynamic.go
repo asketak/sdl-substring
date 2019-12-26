@@ -1,4 +1,4 @@
-package cloudSubstring
+package dynamic
 
 import (
 	"encoding/json"
@@ -35,10 +35,11 @@ func LCSubstring(s string, t string) string {
 			}
 		}
 	}
-
 	return ret
 
 }
+
+
 
 func Entry(w http.ResponseWriter, r *http.Request) {
 	var request struct {
