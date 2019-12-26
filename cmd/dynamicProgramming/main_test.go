@@ -38,11 +38,14 @@ func TestLCSubstring(t *testing.T) {
 
 		{"small match than long", args{"hahaIgagaLha", "fffffhahafffff"},"haha"}, // finds first biggest substring
 		{"long match than small", args{"haIgagaLhaha", "fffffhahafffff"},"haha"}, // finds first biggest substring
+
+		{"no match", args{"hhhhhh", "faaaff"},""},
+		{"single char match ", args{"hhahhh", "faaaff"},"a"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := LCSubstring(tt.args.s, tt.args.t); got != tt.want {
-				t.Errorf("LCSubstring() = %v, want %v", got, tt.want)
+				t.Errorf(" test: %v: LCSubstring() = %v, want %v", tt.name, got, tt.want)
 			}
 		})
 	}
