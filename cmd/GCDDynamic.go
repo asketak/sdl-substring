@@ -15,21 +15,22 @@ func LCSubstring(s string, t string) string {
 		l[i] = make([]int, n)
 	}
 
-	// dynamic programming, l[i][j] ==
+	// dynamic programming, l[i][j] = X means : substrings   s[i-X+1 : i+1] and t[j-X+1:j+1] are same
+	// we comppute the values of l[i][j] and update the highest value of l[i][j] == longest substring == z
 
 	for i := 0; i < r; i++ {
 		for j := 0; j < n; j++ {
 			if s[i] == t[j] {
 				if i == 0 || j == 0 {
-					l[i][j] = 1
+					l[i][j] = 1  // substrings of zero length are same
 				} else {
-					l[i][j] = l[i-1][j-1] + 1
+					l[i][j] = l[i-1][j-1] + 1 // substrings s[i-z:i] === t[j-z:j] and s[i] == t[j] -> we add character s[i] and t[j] to substring
 				}
-				if l[i][j] > z {
-					z = l[i][j]
-					ret = s[i-z+1 : i+1]
+				if l[i][j] > z { // if we found substring with biggest length
+					z = l[i][j] // we update length of the new substring
+					ret = s[i-z+1 : i+1] // and save the substring
 				}
-			} else {
+			} else { // s[i] != t[j] -> common substrings ending on i and j are of 0 length
 				l[i][j] = 0
 			}
 		}
@@ -72,6 +73,5 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 
 	}
 	w.WriteHeader(http.StatusOK)
-
 
 }
