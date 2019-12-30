@@ -54,6 +54,7 @@ func (n *Node) SetParentkey(parentkey PK) {
 }
 
 func (n *Node) setOutEdge(key string, anode *Node, startI int, endI int, bnode *Node) {
+	//log.Printf("in setoutedge: key: %s, anodeid: %d, startI: %d, endI %d, bnode")
 	if n.outedges == nil {
 		n.outedges = make(map[string]OutEdge)
 	}
@@ -96,27 +97,32 @@ func build(chars string) (Node, string) {
 	actlen, remainder, ind := 0, 0, 0
 
 	for ind < len(chars) {
-		print("nove chars:", chars)
+		println("nove chars:", chars)
+		fmt.Printf("BUILDSTATE : nodeid: %d, actkey : %s, actlen %d, rem: %d, ind: %d \n",
+			actnode.id, actkey, actlen, remainder, ind)
 		ch := chars[ind : ind+1]
 		if remainder == 0 {
 			if len(actnode.outEdgesKeys) > 0 && in(actnode.outEdgesKeys, ch) {
-				print("1\n")
+				println("1\n")
 				actkey = ch
 				actlen = 1
 				remainder = 1
-				_, start, end, _ := actnode.getOutEdge(actkey)
-				if end == '#' {
-					print("2\n")
+				a, start, end, b := actnode.getOutEdge(actkey)
+				fmt.Printf("EDGE : a: %d, start : %d, end %d, b: %d, \n",
+					a.id, start, end, b.id)
+
+				if end == 1000 {
+					println("2\n")
 					end = ind
 				}
 				if end-start+1 == actlen {
-					print("3\n")
+					println("3\n")
 					_, _, _, actnode = actnode.getOutEdge(actkey)
 					actkey = ""
 					actlen = 0
 				}
 			} else {
-				print("4\n")
+				println("4\n")
 				aleaf := NewNode(PK{}, nil, nil)
 				pk := PK{
 					node: actnode,
@@ -125,18 +131,18 @@ func build(chars string) (Node, string) {
 				aleaf.SetParentkey(pk)
 				println("pred setting")
 				fmt.Printf("id: %d \n", actnode.id)
-				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, '#', &aleaf)
+				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, 1000, &aleaf)
 				for x, val := range actnode.outedges {
-					fmt.Printf(" edgekey: %s, edge: %d->%d, str:%s..%s \n", x, val.anode.id, val.bnode.id,
+					fmt.Printf(" edgekey: %s, edge: %d->%d, str:%d..%d \n", x, val.anode.id, val.bnode.id,
 						val.labelStart, val.labelEnd)
 				}
 			}
 		} else {
-			print("a5\n")
+			println("a5\n")
 			if actkey == "" && actlen == 0 {
-				print("6\n")
+				println("6\n")
 				if in(actnode.outEdgesKeys, ch) {
-					print("7\n")
+					println("7\n")
 					actkey = ch
 					actlen = 1
 					remainder += 1
@@ -147,35 +153,35 @@ func build(chars string) (Node, string) {
 						unfold(&root, chars, ind, remainder, actnode, actkey, actlen)
 				}
 			} else {
-				print("9\n")
+				println("9\n")
 				_, start, end, _ := actnode.getOutEdge(actkey)
-				if end == '#' {
-					print("10\n")
+				if end == 1000 {
+					println("10\n")
 					end = ind
 				}
 				compareposition := start + actlen
 				if chars[compareposition:compareposition+1] != ch {
-					print("11\n")
+					println("11\n")
 					remainder += 1
 					remainder, actnode, actkey, actlen =
 						unfold(&root, chars, ind, remainder, actnode, actkey, actlen)
 				} else {
-					print("12\n")
+					println("12\n")
 					if compareposition < end {
-						print("13\n")
+						println("13\n")
 						actlen += 1
 						remainder += 1
 					} else {
-						print("14\n")
+						println("14\n")
 						remainder += 1
 						_, _, _, tmp := actnode.getOutEdge(actkey)
 						actnode = tmp
 						if compareposition == end {
-							print("1\n")
+							println("1\n")
 							actlen = 0
 							actkey = ""
 						} else {
-							print("16\n")
+							println("16\n")
 							actlen = 1
 							actkey = ch
 						}
@@ -185,9 +191,9 @@ func build(chars string) (Node, string) {
 		}
 		ind += 1
 		if ind == len(chars) && remainder > 0 {
-			print("pridavas/n")
+			println("pridavas/n")
 			chars = chars + "$"
-			print("nove chars:", chars)
+			println("nove chars:", chars)
 		}
 	}
 	return root, chars
@@ -202,7 +208,7 @@ func step(chars string, ind int, actnode *Node, actkey string, actlen int,
 	rem_label := remains[ind_remainder:]
 	if actlen > 0 {
 		_, start, end, _ := actnode.getOutEdge(actkey)
-		if end == '#' {
+		if end == 1000 {
 			end = ind
 		}
 		edgelabel := chars[start : end+1]
@@ -215,7 +221,7 @@ func step(chars string, ind int, actnode *Node, actkey string, actlen int,
 		if ind_remainder < len(remains) &&
 			in(actnode.outEdgesKeys, remains[ind_remainder:ind_remainder+1]) {
 			_, start, end, _ := actnode.getOutEdge(remains[ind_remainder : ind_remainder+1])
-			if end == '#' {
+			if end == 1000 {
 				end = ind
 			}
 			edgelabel := chars[start : end+1]
@@ -233,12 +239,12 @@ func hop(ind int, actnode *Node, actkey string, actlen int,
 	remains string, ind_remainder int) (*Node, string, int, int) {
 	fmt.Printf("in hop, params: ind: %d, actnode: %d, actkey: %s, actlen %d, remains: %s, ind_remainder: %d\n", ind, actnode.id, actkey, actlen, remains, ind_remainder)
 	if actlen == 0 || actkey == "" {
-		fmt.Printf("Leaving hop immediately")
+		fmt.Printf("Leaving hop immediately\n")
 		return actnode, actkey, actlen, ind_remainder
 	}
 
 	_, start, end, _ := actnode.getOutEdge(actkey)
-	if end == '#' {
+	if end == 1000 {
 		end = ind
 	}
 	edgelength := end - start + 1
@@ -248,7 +254,7 @@ func hop(ind int, actnode *Node, actkey string, actlen int,
 		actkey = string(remains[ind_remainder : ind_remainder+1])
 		actlen -= edgelength
 		_, start, end, _ = actnode.getOutEdge(actkey)
-		if end == '#' {
+		if end == 1000 {
 			end = ind
 		}
 		edgelength = end - start + 1
@@ -266,7 +272,7 @@ func hop(ind int, actnode *Node, actkey string, actlen int,
 func unfold(root *Node, charsp string, indp int, remainderp int,
 	actnode *Node, actkeyp string, actlenp int) (int, *Node, string, int) {
 	var chars, ind, remainder, actkey, actlen = charsp, indp, remainderp, actkeyp, actlenp
-	print("IN UNFOLD")
+	println("IN UNFOLD")
 	println("STATE")
 	println(chars, ind, remainder, actkey, actlen)
 	var prenode *Node = nil
@@ -285,7 +291,7 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 		lost, actnode, actkey, actlen, actlen_re = step(chars, ind, actnode, actkey, actlen, remains, actlen_re)
 		if lost {
 			println("unfold LOST")
-			if actlen == 1 && prenode.id > 0 && actnode.id != root.id {
+			if actlen == 1 && prenode != nil && actnode.id != root.id {
 				println("SETSUFIX  0")
 				prenode.SetSuffixlink(actnode)
 			}
@@ -294,26 +300,29 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 		//aleafLocB = false
 		if actlen == 0 {
 			println("unfold actlen=0")
-			if in(actnode.outEdgesKeys, remains[actlen_re:actlen_re+1]) {
+			if !in(actnode.outEdgesKeys, remains[actlen_re:actlen_re+1]) {
 				aleaf := NewNode(PK{}, nil, nil)
 				//aleafLocB = true
 				//aedge :=  OutEdge{
 				//	anode:      &actnode,
 				//	labelStart: ind,
-				//	labelEnd:   '#',
+				//	labelEnd:   1000,
 				//	bnode:      &aleaf,
 				//}
 				aleaf.SetParentkey(PK{
 					node: actnode,
 					key:  chars[ind : ind+1],
 				})
-				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, '#', &aleaf)
+				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, 1000, &aleaf)
 			}
 		} else {
 			println("unfold actlen>0")
 			_, start, end, bnode := actnode.getOutEdge(actkey)
 			fmt.Printf("%s, %s, %d, %d, %d\n", remains, chars, start, actlen, actlen_re)
 			fmt.Printf("%d\n", remainder)
+			if actnode.suffixlink != nil {
+				fmt.Printf("%d\n", actnode.suffixlink.id)
+			}
 			if remains[actlen_re+actlen:actlen_re+actlen+1] != chars[start+actlen:start+actlen+1] {
 				println("unfold actlen chars")
 				_, start, end, bnode = actnode.getOutEdge(actkey)
@@ -325,19 +334,19 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 				newnode.SetParentkey(PK{actnode, actkey})
 				newnode.setOutEdge(chars[start+actlen:start+actlen+1], &newnode, start+actlen, end, bnode)
 				aleaf = NewNode(PK{}, nil, nil)
-				//aedge := (newnode, ind, '#', aleaf)
+				//aedge := (newnode, ind, 1000, aleaf)
 				aleaf.SetParentkey(PK{
 					node: &newnode,
 					key:  chars[ind : ind+1],
 				})
-				newnode.setOutEdge(chars[ind:ind+1], &newnode, ind, '#', &aleaf)
+				newnode.setOutEdge(chars[ind:ind+1], &newnode, ind, 1000, &aleaf)
 			} else {
 				println("unfold return ", remainder, actnode.id, actkey, actlen)
 				return remainder, actnode, actkey, actlen
 			}
 		}
 		if prenode != nil && aleaf.parentkey.node != nil {
-			if aleaf.parentkey.node != root {
+			if aleaf.parentkey.node != root && prenode.id != aleaf.parentkey.node.id {
 				println("SETSUFIX  1", prenode.id, "->", aleaf.parentkey.node.id)
 				prenode.SetSuffixlink(aleaf.parentkey.node)
 			}
@@ -428,7 +437,7 @@ func printtree(n Node, chars string, depth int) {
 }
 
 func main() {
-	str := "xabxaabxba"
+	str := "xabxa%babxba^"
 	tree, pst := build(str)
 	println(tree.id)
 	println(pst)
