@@ -62,9 +62,9 @@ func (n *Node) setOutEdge(key string, anode *Node, startI int, endI int, bnode *
 	//fmt.Printf("SETOUTEDGESTART node %d: key %s : A:id %d, start: %d, end: %d, bnode: %d\n",
 	//	n.id, key, anode.id, startI, endI, bnode.id)
 
-	//if startI<delimeter  && endI >delimeter {
-	//	endI = delimeter
-	//}
+	if startI<=delimeter  && endI >delimeter {
+		endI = delimeter
+	}
 
 
 	if n.outedges == nil {
@@ -390,12 +390,12 @@ func printtree(n Node, chars string, depth int) {
 	if n.suffixlink != nil {
 		fmt.Printf("suffix link %d ", n.suffixlink.id)
 	}
-	fmt.Printf("\n")
+		fmt.Printf("\n")
 	for x, val := range n.outedges {
 
 		fmt.Printf(strings.Repeat("---", depth))
-		fmt.Printf("edgekey: %s, edge: %d->%d, %s \n", x, val.anode.id, val.bnode.id,
-			chars[val.labelStart:val.labelEnd+1])
+		fmt.Printf("edgekey: %s, edge: %d->%d, %s  %d..%d \n", x, val.anode.id, val.bnode.id,
+			chars[val.labelStart:val.labelEnd+1], val.labelStart, val.labelEnd+1)
 		printtree(*val.bnode, chars, depth+1)
 	}
 }
@@ -508,6 +508,7 @@ func main() {
 	//
 	//delimeter = len(str1)
 	str := "aaa#aaaJJaaa$"
+	delimeter = 3
 	maxLen = len(str)-1
 	tree, pst := build(str)
 	println(tree.id)
