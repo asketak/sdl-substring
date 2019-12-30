@@ -7,6 +7,10 @@ import (
 )
 
 var num int
+var delimeter int
+var str string
+
+var maxLen int
 
 type OutEdge struct {
 	anode      *Node
@@ -55,6 +59,14 @@ func (n *Node) SetParentkey(parentkey PK) {
 
 func (n *Node) setOutEdge(key string, anode *Node, startI int, endI int, bnode *Node) {
 	//log.Printf("in setoutedge: key: %s, anodeid: %d, startI: %d, endI %d, bnode")
+	//fmt.Printf("SETOUTEDGESTART node %d: key %s : A:id %d, start: %d, end: %d, bnode: %d\n",
+	//	n.id, key, anode.id, startI, endI, bnode.id)
+
+	//if startI<delimeter  && endI >delimeter {
+	//	endI = delimeter
+	//}
+
+
 	if n.outedges == nil {
 		n.outedges = make(map[string]OutEdge)
 	}
@@ -66,7 +78,7 @@ func (n *Node) setOutEdge(key string, anode *Node, startI int, endI int, bnode *
 	}
 	n.outedges[key] = x
 	n.outEdgesKeys = append(n.outEdgesKeys, key)
-	fmt.Printf("zapsano node %d: key %s : A:id %d, start: %d, end: %d, bnode: %d\n",
+	fmt.Printf("SETOUTEDGE node %d: key %s : A:id %d, start: %d, end: %d, bnode: %d\n",
 		n.id, key, x.anode.id, x.labelStart, x.labelEnd, x.bnode.id)
 
 }
@@ -97,7 +109,6 @@ func build(chars string) (Node, string) {
 	actlen, remainder, ind := 0, 0, 0
 
 	for ind < len(chars) {
-		println("nove chars:", chars)
 		fmt.Printf("BUILDSTATE : nodeid: %d, actkey : %s, actlen %d, rem: %d, ind: %d \n",
 			actnode.id, actkey, actlen, remainder, ind)
 		ch := chars[ind : ind+1]
@@ -108,10 +119,9 @@ func build(chars string) (Node, string) {
 				actlen = 1
 				remainder = 1
 				a, start, end, b := actnode.getOutEdge(actkey)
-				fmt.Printf("EDGE : a: %d, start : %d, end %d, b: %d, \n",
-					a.id, start, end, b.id)
+				fmt.Printf("EDGE : a: %d, start : %d, end %d, b: %d, \n", a.id, start, end, b.id)
 
-				if end == 1000 {
+				if end == maxLen {
 					println("2\n")
 					end = ind
 				}
@@ -129,13 +139,8 @@ func build(chars string) (Node, string) {
 					key:  chars[ind : ind+1],
 				}
 				aleaf.SetParentkey(pk)
-				println("pred setting")
 				fmt.Printf("id: %d \n", actnode.id)
-				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, 1000, &aleaf)
-				for x, val := range actnode.outedges {
-					fmt.Printf(" edgekey: %s, edge: %d->%d, str:%d..%d \n", x, val.anode.id, val.bnode.id,
-						val.labelStart, val.labelEnd)
-				}
+				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, maxLen, &aleaf)
 			}
 		} else {
 			println("a5\n")
@@ -154,8 +159,10 @@ func build(chars string) (Node, string) {
 				}
 			} else {
 				println("9\n")
-				_, start, end, _ := actnode.getOutEdge(actkey)
-				if end == 1000 {
+				a, start, end, b := actnode.getOutEdge(actkey)
+				fmt.Printf(" a:id: %d,START: %d, end: %d b:id: %d,\n",
+					a.id,start,end, b.id)
+				if end == maxLen {
 					println("10\n")
 					end = ind
 				}
@@ -190,11 +197,6 @@ func build(chars string) (Node, string) {
 			}
 		}
 		ind += 1
-		if ind == len(chars) && remainder > 0 {
-			println("pridavas/n")
-			chars = chars + "$"
-			println("nove chars:", chars)
-		}
 	}
 	return root, chars
 }
@@ -208,8 +210,8 @@ func step(chars string, ind int, actnode *Node, actkey string, actlen int,
 	rem_label := remains[ind_remainder:]
 	if actlen > 0 {
 		_, start, end, _ := actnode.getOutEdge(actkey)
-		if end == 1000 {
-			end = ind
+			if end == maxLen {
+				end = ind
 		}
 		edgelabel := chars[start : end+1]
 		if strings.HasPrefix(edgelabel, rem_label) {
@@ -221,7 +223,7 @@ func step(chars string, ind int, actnode *Node, actkey string, actlen int,
 		if ind_remainder < len(remains) &&
 			in(actnode.outEdgesKeys, remains[ind_remainder:ind_remainder+1]) {
 			_, start, end, _ := actnode.getOutEdge(remains[ind_remainder : ind_remainder+1])
-			if end == 1000 {
+				if end == maxLen {
 				end = ind
 			}
 			edgelabel := chars[start : end+1]
@@ -244,8 +246,8 @@ func hop(ind int, actnode *Node, actkey string, actlen int,
 	}
 
 	_, start, end, _ := actnode.getOutEdge(actkey)
-	if end == 1000 {
-		end = ind
+		if end == maxLen {
+			end = ind
 	}
 	edgelength := end - start + 1
 	for actlen > edgelength {
@@ -254,7 +256,7 @@ func hop(ind int, actnode *Node, actkey string, actlen int,
 		actkey = string(remains[ind_remainder : ind_remainder+1])
 		actlen -= edgelength
 		_, start, end, _ = actnode.getOutEdge(actkey)
-		if end == 1000 {
+			if end == maxLen {
 			end = ind
 		}
 		edgelength = end - start + 1
@@ -277,8 +279,8 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 	println(chars, ind, remainder, actkey, actlen)
 	var prenode *Node = nil
 	//var aleafLocB bool
-	aleaf := Node{}
 	for remainder > 0 {
+		aleaf := Node{}
 		println("STATE")
 		println(chars, ind, remainder, actkey, actlen)
 		println("unfold remain: ", remainder)
@@ -301,19 +303,19 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 		if actlen == 0 {
 			println("unfold actlen=0")
 			if !in(actnode.outEdgesKeys, remains[actlen_re:actlen_re+1]) {
-				aleaf := NewNode(PK{}, nil, nil)
+				aleaf = NewNode(PK{}, nil, nil)
 				//aleafLocB = true
 				//aedge :=  OutEdge{
 				//	anode:      &actnode,
 				//	labelStart: ind,
-				//	labelEnd:   1000,
+				//	labelEnd:   maxLen,
 				//	bnode:      &aleaf,
 				//}
 				aleaf.SetParentkey(PK{
 					node: actnode,
 					key:  chars[ind : ind+1],
 				})
-				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, 1000, &aleaf)
+				actnode.setOutEdge(chars[ind:ind+1], actnode, ind, maxLen, &aleaf)
 			}
 		} else {
 			println("unfold actlen>0")
@@ -321,7 +323,7 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 			fmt.Printf("%s, %s, %d, %d, %d\n", remains, chars, start, actlen, actlen_re)
 			fmt.Printf("%d\n", remainder)
 			if actnode.suffixlink != nil {
-				fmt.Printf("%d\n", actnode.suffixlink.id)
+				fmt.Printf("sufix: %d\n", actnode.suffixlink.id)
 			}
 			if remains[actlen_re+actlen:actlen_re+actlen+1] != chars[start+actlen:start+actlen+1] {
 				println("unfold actlen chars")
@@ -334,24 +336,27 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 				newnode.SetParentkey(PK{actnode, actkey})
 				newnode.setOutEdge(chars[start+actlen:start+actlen+1], &newnode, start+actlen, end, bnode)
 				aleaf = NewNode(PK{}, nil, nil)
-				//aedge := (newnode, ind, 1000, aleaf)
+				//aedge := (newnode, ind, maxLen, aleaf)
 				aleaf.SetParentkey(PK{
 					node: &newnode,
 					key:  chars[ind : ind+1],
 				})
-				newnode.setOutEdge(chars[ind:ind+1], &newnode, ind, 1000, &aleaf)
+				newnode.setOutEdge(chars[ind:ind+1], &newnode, ind, maxLen, &aleaf)
 			} else {
 				println("unfold return ", remainder, actnode.id, actkey, actlen)
 				return remainder, actnode, actkey, actlen
 			}
 		}
+
+
 		if prenode != nil && aleaf.parentkey.node != nil {
+			fmt.Printf("prenode id: %d, aleafpk: %d", prenode.id, aleaf.parentkey.node.id)
 			if aleaf.parentkey.node != root && prenode.id != aleaf.parentkey.node.id {
 				println("SETSUFIX  1", prenode.id, "->", aleaf.parentkey.node.id)
 				prenode.SetSuffixlink(aleaf.parentkey.node)
 			}
 		}
-		if aleaf.parentkey.node != nil && aleaf.parentkey.node != root{
+		if aleaf.parentkey.node != nil && aleaf.parentkey.node != root {
 			prenode = aleaf.Parentkey().node
 		}
 		if actnode.id == root.id && remainder > 1 {
@@ -377,47 +382,6 @@ func unfold(root *Node, charsp string, indp int, remainderp int,
 	return remainder, actnode, actkey, actlen
 }
 
-//func draw2(rnode Node, chars string, v int, ed string) {
-//	l := len(chars)
-//	edges := rnode.outEdgesKeys
-//	nogc := make([]OutEdge, 0)
-//	hasgc := make([]OutEdge, 0)
-//	gc := make([]OutEdge, 0)
-//	maxlen := len(chars) + 6
-//	for _, edg := range rnode.getOutEdges() {
-//		if v == 0 {
-//			if len(edg.anode.suffixlink.outEdgesKeys) == 0 {
-//				nogc = append(nogc, edg)
-//			} else {
-//				hasgc = append(hasgc, edg)
-//			}
-//		} else {
-//			if len(edg.anode.suffixlink.outEdgesKeys) == 0 {
-//				hasgc = append(nogc, edg)
-//			} else {
-//				nogc = append(hasgc, edg)
-//			}
-//		}
-//	}
-//	for _, x := range hasgc {
-//		gc = append(gc, x)
-//	}
-//	for _, x := range nogc {
-//		gc = append(gc, x)
-//	}
-//	for k, tmp := range gc{
-//		parent, s,t, node := tmp.anode,tmp.labelStart,tmp.labelEnd, tmp.bnode
-//
-//	}
-//
-//
-//}
-
-//func draw1(root Node, chars string) {
-//	fmt.Printf("\n %s \n (0)", chars)
-//	draw2(root, chars, 0, "#")
-//}
-
 func printtree(n Node, chars string, depth int) {
 	//fmt.Printf(" jsem node %d, suffix link: %d, ",
 	//	root.id, root.suffixlink.id)
@@ -429,17 +393,133 @@ func printtree(n Node, chars string, depth int) {
 	fmt.Printf("\n")
 	for x, val := range n.outedges {
 
-		fmt.Printf(strings.Repeat("--", depth))
-		fmt.Printf("edgekey: %s, edge: %d->%d, %d..%d \n ", x, val.anode.id, val.bnode.id,
-			val.labelStart, val.labelEnd)
+		fmt.Printf(strings.Repeat("---", depth))
+		fmt.Printf("edgekey: %s, edge: %d->%d, %s \n", x, val.anode.id, val.bnode.id,
+			chars[val.labelStart:val.labelEnd+1])
 		printtree(*val.bnode, chars, depth+1)
 	}
 }
 
-func main() {
-	str := "xabxa%babxba^"
+func LCSFromSuffixTree(char string, n Node, o OutEdge, delimeter int, path string) (p string, flag int) {
+	fmt.Printf("\nin suff char %s, n.id %d, edge: %d..%d, del: %d, path: %s \n", char, n.id, o.labelStart,o.labelEnd+1, delimeter, path)
+
+	// returns -1 if contains first string
+	// returns 1 if contains second string
+	// returns 0 if leaves contains both
+	var ret int
+	if len(n.outEdgesKeys) == 0 { // we are in leave
+		println("INLEAVES")
+		if o.labelStart <= delimeter && o.labelEnd <= delimeter {
+			ret = -1
+		}
+		if o.labelStart >= delimeter && o.labelEnd >= delimeter {
+			ret = 1
+		}
+		p = ""
+		flag = ret
+		println("leaving leave")
+		println(p,flag)
+		return
+	}
+
+	maxLenFound := 0
+	flags := make(map[int]bool)
+	fupath := path
+
+	for _, val := range n.outedges { // we go through deeper nodes
+		if n.id != 0{
+			fupath = path + char[o.labelStart:o.labelEnd+1]
+		}
+		str, tmpflag := LCSFromSuffixTree(char, *val.bnode, val, delimeter, fupath)
+		flags[tmpflag] = true                       // write found flags
+		fmt.Printf(" in id: %d, Writing flag: %b, of child : %d\n", n.id,tmpflag, val.bnode.id)
+		if tmpflag == 0 && len(str) >= maxLenFound { // find the longest string with 0 flag
+			p = str
+			maxLenFound = len(str)
+		}
+	}
+	fmt.Printf("-j flag: %t, +1 flag : %t, 0 flag: %t \n", flags[-1], flags[+1], flags[0])
+
+
+	if maxLenFound > 0 { // we found some string with
+		flag = 0
+		return
+	} else { // we check if we are first zero
+		if flags[-1] == true && flags[1] == true { // both substrings in leaves
+			p = fupath
+			flag = 0
+			println("leave")
+			println(p,flag)
+			return
+		} else {
+			if flags[1] { //
+				p = ""
+				flag = 1
+				println("leave")
+				println(p,flag)
+				return
+
+			}
+			if flags[-1] { // both substrings in leaves
+				p = ""
+				flag = -1
+				println("leave")
+				println(p,flag)
+				return
+
+			}
+			panic("THIS HSOULD NOT HAPPEN")
+		}
+	}
+}
+
+//wrapper around this monstrosity
+func LCSubstring(s string, t string) ( ret string )  {
+	ending,delim := "$", "#"
+	str = s + delim + t + ending
+	delimeter = len(s)
+	maxLen = len(str)-1
 	tree, pst := build(str)
 	println(tree.id)
 	println(pst)
+	fmt.Printf("'%s'", str)
 	printtree(tree, pst, 0)
+	st,_ := LCSFromSuffixTree(str, tree, OutEdge{
+		anode:      nil,
+		labelStart: 0,
+		labelEnd:   0,
+		bnode:      nil,
+	}, delimeter,"")
+	println("STRIIING")
+	return st
+
+
+}
+
+func main() {
+	//ending,delim := "$", "#"
+	//str1 := strings.Repeat("na", 1000000)
+	//str2 := strings.Repeat("ha", 1000000)
+
+	//str1 := "xabxa"
+	////str2 := "babxba"
+	//str = str1 + delim+ str2 + ending
+	//
+	//
+	//delimeter = len(str1)
+	str := "aaa#aaaJJaaa$"
+	maxLen = len(str)-1
+	tree, pst := build(str)
+	println(tree.id)
+	println(pst)
+	fmt.Printf("'%s'", str)
+	printtree(tree, pst, 0)
+	//st,_ := LCSFromSuffixTree(str, tree, OutEdge{
+	//	anode:      nil,
+	//	labelStart: 0,
+	//	labelEnd:   0,
+	//	bnode:      nil,
+	//}, delimeter,"")
+	println("STRIIING")
+	//println(st)
 }

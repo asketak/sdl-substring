@@ -1,0 +1,102 @@
+id: 0 
+zapsano node 0: key x : A:id 0, start: 0, end: 35, bnode: 1
+ edgekey: x, edge: 0->1, str:%!s(int=0)..%!s(int=35) 
+id: 0 
+zapsano node 0: key a : A:id 0, start: 1, end: 35, bnode: 2
+ edgekey: a, edge: 0->2, str:%!s(int=1)..%!s(int=35) 
+ edgekey: x, edge: 0->1, str:%!s(int=0)..%!s(int=35) 
+id: 0 
+zapsano node 0: key b : A:id 0, start: 2, end: 35, bnode: 3
+ edgekey: x, edge: 0->1, str:%!s(int=0)..%!s(int=35) 
+ edgekey: a, edge: 0->2, str:%!s(int=1)..%!s(int=35) 
+ edgekey: b, edge: 0->3, str:%!s(int=2)..%!s(int=35) 
+in hop, params: ind: 5, actnode: 0, actkey: x, actlen 2, remains: xaa, ind_remainder: 0
+LEAVIN Hop: actnode: 0, actkey: x, actlen 2, ind_remainder: 0
+in step, chars: xabxaabxba, ind: 5, actnode: 0, actkde: x, actlen 2, remains: xaa, ind_rem: 0 
+xaa, xabxaabxba, 0, 2, 0
+3
+zapsano node 0: key x : A:id 0, start: 0, end: 1, bnode: 4
+zapsano node 4: key b : A:id 4, start: 2, end: 35, bnode: 1
+zapsano node 4: key a : A:id 4, start: 5, end: 35, bnode: 5
+in hop, params: ind: 5, actnode: 0, actkey: a, actlen 1, remains: aa, ind_remainder: 0
+LEAVIN Hop: actnode: 0, actkey: a, actlen 1, ind_remainder: 0
+in step, chars: xabxaabxba, ind: 5, actnode: 0, actkde: a, actlen 1, remains: aa, ind_rem: 0 
+aa, xabxaabxba, 1, 1, 0
+2
+zapsano node 0: key a : A:id 0, start: 1, end: 1, bnode: 6
+zapsano node 6: key b : A:id 6, start: 2, end: 35, bnode: 2
+zapsano node 6: key a : A:id 6, start: 5, end: 35, bnode: 7
+in hop, params: ind: 5, actnode: 0, actkey: a, actlen 0, remains: a, ind_remainder: 0
+Leaving hop immediatelyin step, chars: xabxaabxba, ind: 5, actnode: 0, actkde: a, actlen 0, remains: a, ind_rem: 0 
+in hop, params: ind: 8, actnode: 6, actkey: b, actlen 2, remains: abxb, ind_remainder: 1
+LEAVIN Hop: actnode: 6, actkey: b, actlen 2, ind_remainder: 1
+in step, chars: xabxaabxba, ind: 8, actnode: 6, actkde: b, actlen 2, remains: abxb, ind_rem: 1 
+abxb, xabxaabxba, 2, 2, 1
+4
+zapsano node 6: key b : A:id 6, start: 2, end: 3, bnode: 8
+zapsano node 8: key a : A:id 8, start: 4, end: 35, bnode: 2
+zapsano node 8: key b : A:id 8, start: 8, end: 35, bnode: 9
+in hop, params: ind: 8, actnode: 0, actkey: b, actlen 2, remains: bxb, ind_remainder: 0
+LEAVIN Hop: actnode: 0, actkey: b, actlen 2, ind_remainder: 0
+in step, chars: xabxaabxba, ind: 8, actnode: 0, actkde: b, actlen 2, remains: bxb, ind_rem: 0 
+bxb, xabxaabxba, 2, 2, 0
+3
+zapsano node 0: key b : A:id 0, start: 2, end: 3, bnode: 10
+zapsano node 10: key a : A:id 10, start: 4, end: 35, bnode: 3
+zapsano node 10: key b : A:id 10, start: 8, end: 35, bnode: 11
+in hop, params: ind: 8, actnode: 0, actkey: x, actlen 1, remains: xb, ind_remainder: 0
+LEAVIN Hop: actnode: 0, actkey: x, actlen 1, ind_remainder: 0
+in step, chars: xabxaabxba, ind: 8, actnode: 0, actkde: x, actlen 1, remains: xb, ind_rem: 0 
+xb, xabxaabxba, 0, 1, 0
+2
+zapsano node 0: key x : A:id 0, start: 0, end: 0, bnode: 12
+zapsano node 12: key a : A:id 12, start: 1, end: 1, bnode: 4
+zapsano node 12: key b : A:id 12, start: 8, end: 35, bnode: 13
+in hop, params: ind: 8, actnode: 0, actkey: b, actlen 0, remains: b, ind_remainder: 0
+Leaving hop immediatelyin step, chars: xabxaabxba, ind: 8, actnode: 0, actkde: b, actlen 0, remains: b, ind_rem: 0 
+in hop, params: ind: 9, actnode: 0, actkey: b, actlen 1, remains: ba, ind_remainder: 0
+LEAVIN Hop: actnode: 0, actkey: b, actlen 1, ind_remainder: 0
+in step, chars: xabxaabxba, ind: 9, actnode: 0, actkde: b, actlen 1, remains: ba, ind_rem: 0 
+ba, xabxaabxba, 2, 1, 0
+2
+zapsano node 0: key b : A:id 0, start: 2, end: 2, bnode: 14
+zapsano node 14: key x : A:id 14, start: 3, end: 3, bnode: 10
+zapsano node 14: key a : A:id 14, start: 9, end: 35, bnode: 15
+in hop, params: ind: 9, actnode: 0, actkey: a, actlen 0, remains: a, ind_remainder: 0
+Leaving hop immediatelyin step, chars: xabxaabxba, ind: 9, actnode: 0, actkde: a, actlen 0, remains: a, ind_rem: 0 
+in hop, params: ind: 10, actnode: 0, actkey: a, actlen 1, remains: a$, ind_remainder: 0
+LEAVIN Hop: actnode: 6, actkey: , actlen 0, ind_remainder: 1
+in step, chars: xabxaabxba$, ind: 10, actnode: 6, actkde: , actlen 0, remains: a$, ind_rem: 1 
+in hop, params: ind: 10, actnode: 0, actkey: , actlen 0, remains: $, ind_remainder: 0
+Leaving hop immediatelyin step, chars: xabxaabxba$, ind: 10, actnode: 0, actkde: , actlen 0, remains: $, ind_rem: 0 
+I am 0 
+edgekey: x, edge: 0->12, 0..0 
+ --I am 12 
+--edgekey: a, edge: 12->4, 1..1 
+ ----I am 4 
+----edgekey: b, edge: 4->1, 2..35 
+ ------I am 1 suffix link 0 
+----edgekey: a, edge: 4->5, 5..35 
+ ------I am 5 
+--edgekey: b, edge: 12->13, 8..35 
+ ----I am 13 
+edgekey: a, edge: 0->6, 1..1 
+ --I am 6 
+--edgekey: b, edge: 6->8, 2..3 
+ ----I am 8 
+----edgekey: a, edge: 8->2, 4..35 
+ ------I am 2 suffix link 0 
+----edgekey: b, edge: 8->9, 8..35 
+ ------I am 9 
+--edgekey: a, edge: 6->7, 5..35 
+ ----I am 7 
+edgekey: b, edge: 0->14, 2..2 
+ --I am 14 
+--edgekey: x, edge: 14->10, 3..3 
+ ----I am 10 
+----edgekey: a, edge: 10->3, 4..35 
+ ------I am 3 suffix link 0 
+----edgekey: b, edge: 10->11, 8..35 
+ ------I am 11 
+--edgekey: a, edge: 14->15, 9..35 
+ ----I am 15 
