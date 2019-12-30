@@ -47,9 +47,9 @@ func TestLCSubstring(t *testing.T) {
 		{"no match", args{"hhhhhh", "faaaff"},""},
 		{"single char match ", args{"hhahhh", "faaaff"},"a"},
 		{"hundred char match ", args{strings.Repeat("na", 100), strings.Repeat("ha", 100)},"a"},
-		//		{"thousands char match ", args{strings.Repeat("na", 1000), strings.Repeat("ha", 1000)},"a"},
-		//		{"thousands char match ", args{strings.Repeat("na", 10000), strings.Repeat("ha", 10000)},"a"},
-		//		{"hundred thousand char match ", args{strings.Repeat("na", 100000), strings.Repeat("ha", 100000)},"a"},
+		{"thousands char match ", args{strings.Repeat("na", 1000), strings.Repeat("ha", 1000)},"a"},
+		{"thousands char match ", args{strings.Repeat("na", 10000), strings.Repeat("ha", 10000)},"a"},
+		{"hundred thousand char match ", args{strings.Repeat("a", 10000), strings.Repeat("h", 10000)},""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -1,6 +1,12 @@
 package main
 
+import "strings"
+
 func main() {
+	str1 := strings.Repeat("na", 100000)
+	str2 := strings.Repeat("h", 100000)
+	x := LCSubstring(str1,str2)
+	print(x)
 
 }
 func Max(x, y int) int {

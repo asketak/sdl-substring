@@ -1,8 +1,8 @@
 package LCSAsync
 
 import (
-	"log"
 	"sync"
+	"time"
 )
 
 var substringSizes = make(map[int]map[int]int) // how long is common prefix if we start at index
@@ -25,6 +25,7 @@ func LCSAsync(s string, t string) string {
 	for i, _ := range s {
 		substringSizes[i] = make(map[int]int)
 	}
+	time.Sleep(5*time.Second)
 	for i, _ := range s {
 		for j, _ := range t {
 			wg.Add(1)
@@ -32,9 +33,6 @@ func LCSAsync(s string, t string) string {
 		}
 	}
 	wg.Wait()
-	for i, value := range substringSizes {
-		log.Print(i, "AAA", value)
-	}
 	for i, _ := range s {
 		for j, _ := range t {
 			if substringSizes[i][j] > maxlen {
