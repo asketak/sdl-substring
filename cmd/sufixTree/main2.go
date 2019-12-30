@@ -409,10 +409,10 @@ func LCSFromSuffixTree(char string, n Node, o OutEdge, delimeter int, path strin
 	var ret int
 	if len(n.outEdgesKeys) == 0 { // we are in leave
 		println("INLEAVES")
-		if o.labelStart <= delimeter && o.labelEnd <= delimeter {
+		if o.labelStart <= delimeter && o.labelEnd <= delimeter+1 {
 			ret = -1
 		}
-		if o.labelStart >= delimeter && o.labelEnd >= delimeter {
+		if o.labelStart >= delimeter && o.labelEnd > delimeter+1 {
 			ret = 1
 		}
 		p = ""
@@ -475,6 +475,7 @@ func LCSFromSuffixTree(char string, n Node, o OutEdge, delimeter int, path strin
 
 //wrapper around this monstrosity
 func LCSubstring(s string, t string) ( ret string )  {
+	num , delimeter , str, maxLen  = 0,0,"",0
 	ending,delim := "$", "#"
 	str = s + delim + t + ending
 	delimeter = len(s)
@@ -497,30 +498,26 @@ func LCSubstring(s string, t string) ( ret string )  {
 }
 
 func main() {
-	//ending,delim := "$", "#"
-	//str1 := strings.Repeat("na", 1000000)
-	//str2 := strings.Repeat("ha", 1000000)
+	s := strings.Repeat("na", 100000)
+	t := strings.Repeat("h", 100000)
 
-	//str1 := "xabxa"
-	////str2 := "babxba"
-	//str = str1 + delim+ str2 + ending
-	//
-	//
-	//delimeter = len(str1)
-	str := "aaa#aaaJJaaa$"
-	delimeter = 3
+	num , delimeter , str, maxLen  = 0,0,"",0
+	ending,delim := "$", "#"
+	str = s + delim + t + ending
+	delimeter = len(s)
 	maxLen = len(str)-1
 	tree, pst := build(str)
 	println(tree.id)
 	println(pst)
 	fmt.Printf("'%s'", str)
 	printtree(tree, pst, 0)
-	//st,_ := LCSFromSuffixTree(str, tree, OutEdge{
-	//	anode:      nil,
-	//	labelStart: 0,
-	//	labelEnd:   0,
-	//	bnode:      nil,
-	//}, delimeter,"")
+	st,_ := LCSFromSuffixTree(str, tree, OutEdge{
+		anode:      nil,
+		labelStart: 0,
+		labelEnd:   0,
+		bnode:      nil,
+	}, delimeter,"")
 	println("STRIIING")
-	//println(st)
+	println( st)
+
 }

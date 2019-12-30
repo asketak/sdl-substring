@@ -15,11 +15,11 @@ func TestLCSubstring(t *testing.T) {
 		args    args
 		wantRet string
 	}{
-		{"samestring", args{"hahojky", "hahojky"},"hahojky"},
+		{"emptyfirst", args{"hahoj", ""},""},
 		{"samestring", args{"hahoj", "hahoj"},"hahoj"},
+		{"samestring", args{"hahojky", "hahojky"},"hahojky"},
 		{"nocommon", args{"abcd", "efgh"},""},
 
-		{"emptyfirst", args{"hahoj", ""},""},
 		{"emptysecond", args{"", "hahoj"},""},
 
 		{"prefix", args{"aaaa", "aahj"},"aa"},
